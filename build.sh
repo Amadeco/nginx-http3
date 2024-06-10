@@ -33,6 +33,9 @@ cd ../../../..
 git clone --depth 1 --recursive https://github.com/leev/ngx_http_geoip2_module > /dev/null 2>&1
 git clone --depth 1 --recursive https://github.com/openresty/headers-more-nginx-module > /dev/null 2>&1
 git clone --depth 1 --recursive https://github.com/tokers/zstd-nginx-module > /dev/null 2>&1
+cd zstd-nginx-module
+curl https://patch-diff.githubusercontent.com/raw/tokers/zstd-nginx-module/pull/23.diff | git apply
+cd ..
 echo Build nginx.
 cd ..
 sed -i 's|NGINX Packaging <nginx-packaging@f5.com>|Amadeco <contact@amadeco.fr>|g' control
