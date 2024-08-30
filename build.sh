@@ -17,22 +17,28 @@ apt-get build-dep --allow-change-held-packages --allow-downgrades --allow-remove
 nginx > /dev/null 2>&1
 echo Fetch NGINX source code.
 apt-get source nginx > /dev/null 2>&1
+
 echo Fetch quictls source code.
 cd nginx-*
 mkdir debian/modules
 cd debian/modules
 git clone --depth 1 --recursive https://github.com/quictls/openssl > /dev/null 2>&1
+
 echo Fetch additional dependencies.
 git clone --depth 1 --recursive https://github.com/google/ngx_brotli > /dev/null 2>&1
 mkdir ngx_brotli/deps/brotli/out
 cd ngx_brotli/deps/brotli/out
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=installed .. \
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed .. \
 > /dev/null 2>&1
 cmake --build . --config Release --target brotlienc > /dev/null 2>&1
 cd ../../../..
-git clone --depth 1 --recursive https://github.com/leev/ngx_http_geoip2_module > /dev/null 2>&1
-git clone --depth 1 --recursive https://github.com/openresty/headers-more-nginx-module > /dev/null 2>&1
+
 git clone --depth 1 --recursive https://github.com/tokers/zstd-nginx-module > /dev/null 2>&1
+
+git clone --depth 1 --recursive https://github.com/leev/ngx_http_geoip2_module > /dev/null 2>&1
+
+git clone --depth 1 --recursive https://github.com/openresty/headers-more-nginx-module > /dev/null 2>&1
+
 echo Build nginx.
 cd ..
 sed -i 's|NGINX Packaging <nginx-packaging@f5.com>|Amadeco <contact@amadeco.fr>|g' control
